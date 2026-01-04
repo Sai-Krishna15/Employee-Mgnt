@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
             <nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <LayoutDashboard className="w-6 h-6 text-blue-600" />
-                    <h1 className="text-xl font-bold text-gray-800">Employee Dashboard</h1>
+                    <h1 className="text-xs md:text-xl font-bold text-gray-800">Employee Dashboard</h1>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-sm text-gray-600">
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
                     </div>
                     <button
                         onClick={logout}
-                        className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
+                        className="flex items-center gap-2 text-sm cursor-pointer text-red-600 hover:text-red-700 font-medium transition-colors"
                     >
                         <LogOut className="w-4 h-4" />
                         Logout

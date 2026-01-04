@@ -4,6 +4,7 @@ import { Edit, Trash2, Printer, Search, Plus, Filter } from 'lucide-react';
 import type { Employee } from '../types';
 import { format } from 'date-fns';
 import { EmployeeForm } from './EmployeeForm';
+import { ConfirmationModal } from './ConfirmationModal';
 
 export const EmployeeList: React.FC = () => {
     const { employees, deleteEmployee } = useEmployees();
@@ -12,6 +13,8 @@ export const EmployeeList: React.FC = () => {
     const [filterStatus, setFilterStatus] = useState<string>('All');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState<string | null>(null);
 
     const filteredEmployees = employees.filter((emp) => {
         const matchesSearch = emp.fullName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -22,9 +25,15 @@ export const EmployeeList: React.FC = () => {
         return matchesSearch && matchesGender && matchesStatus;
     });
 
-    const handleDelete = (id: string) => {
-        if (window.confirm('Are you sure you want to delete this employee?')) {
-            deleteEmployee(id);
+    const confirmDelete = (id: string) => {
+        setEmployeeToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDelete = () => {
+        if (employeeToDelete) {
+            deleteEmployee(employeeToDelete);
+            setEmployeeToDelete(null);
         }
     };
 
@@ -116,7 +125,10 @@ export const EmployeeList: React.FC = () => {
                                     <td className="px-6 py-4 text-sm text-gray-600">#{emp.id}</td>
                                     <td className="px-6 py-4">
                                         <img
-                                            src={emp.profileImage || 'https://via.placeholder.com/40'}
+                                            src={
+                                                emp.profileImage?.trim() ||
+                                                `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.fullName)}`
+                                            }
                                             alt={emp.fullName}
                                             className="w-10 h-10 rounded-full object-cover border border-gray-200"
                                         />
@@ -150,7 +162,7 @@ export const EmployeeList: React.FC = () => {
                                             <button
                                                 className="p-1 text-red-600 hover:bg-red-50 rounded"
                                                 title="Delete"
-                                                onClick={() => handleDelete(emp.id)}
+                                                onClick={() => confirmDelete(emp.id)}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -173,6 +185,14 @@ export const EmployeeList: React.FC = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 initialData={editingEmployee}
+            />
+
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Employee"
+                message="Are you sure you want to delete this employee? This action cannot be undone."
             />
         </div>
     );

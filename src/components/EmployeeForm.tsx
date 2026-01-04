@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { X, Upload, User } from 'lucide-react';
+import { X, Upload, User, Loader2 } from 'lucide-react';
 import { useEmployees } from '../context/EmployeeContext';
 import type { Employee, EmployeeFormData } from '../types';
 
@@ -36,12 +36,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
         handleSubmit,
         reset,
         setValue,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<EmployeeSchema>({
         resolver: zodResolver(employeeSchema),
         defaultValues: {
             fullName: '',
-            gender: undefined,
+            gender: '',
             dob: '',
             state: '',
             isActive: true,
@@ -60,7 +60,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
             } else {
                 reset({
                     fullName: '',
-                    gender: undefined,
+                    gender: '',
                     dob: '',
                     state: '',
                     isActive: true,
@@ -81,7 +81,10 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
         }
     };
 
-    const onSubmit = (data: EmployeeSchema) => {
+    const onSubmit = async (data: EmployeeSchema) => {
+        // Simulate network delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const formData: EmployeeFormData = {
             ...data,
             gender: data.gender as 'Male' | 'Female' | 'Other',
@@ -99,7 +102,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center p-6 border-b border-gray-200">
                     <h2 className="text-xl font-bold text-gray-800">
@@ -119,7 +122,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
                             ) : (
                                 <User className="w-10 h-10 text-gray-400" />
                             )}
-                            <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-30 cursor-pointer transition-all">
+                            <label className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-opacity-30 cursor-pointer transition-all">
                                 <Upload className="w-6 h-6 text-white opacity-0 group-hover:opacity-100" />
                                 <input
                                     type="file"
@@ -170,6 +173,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
                                 type="date"
                                 {...register('dob')}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                max={new Date().toISOString().split('T')[0]}
                             />
                             {errors.dob && (
                                 <p className="text-red-500 text-xs mt-1">{errors.dob.message}</p>
@@ -219,8 +223,10 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ isOpen, onClose, ini
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                            disabled={isSubmitting}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
+                            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
                             {initialData ? 'Update Employee' : 'Add Employee'}
                         </button>
                     </div>

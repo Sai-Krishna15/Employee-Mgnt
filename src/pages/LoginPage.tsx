@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { User, Lock } from 'lucide-react';
+import { User, Lock, Loader2 } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -16,11 +17,16 @@ const LoginPage: React.FC = () => {
             setError('Please enter both username and password');
             return;
         }
+        setIsLoading(true);
+        setError('');
         try {
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
             await login(username);
             navigate('/');
         } catch (err) {
             setError('Failed to login');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -71,8 +77,10 @@ const LoginPage: React.FC = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium"
+                        disabled={isLoading}
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
+                        {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                         Sign In
                     </button>
                 </form>
