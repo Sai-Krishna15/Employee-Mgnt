@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Employee Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based web application for managing employee records, featuring authentication, CRUD operations, search, filtering, and print functionality.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This dashboard allows administrators to manage employee data efficiently. It includes:
+- **Authentication**: Secure login page (Mock credentials).
+- **Dashboard**: Overview of employee statistics.
+- **Employee Management**: Add, Edit, Delete, and View employees.
+- **Search & Filter**: Find employees by name, gender, or status.
+- **Print**: Optimized print view for the employee list.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend Framework**: React 19 (via Vite)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Routing**: React Router DOM v7
+- **Form Handling**: React Hook Form
+- **Validation**: Zod
+- **Icons**: Lucide React
+- **Notifications**: Sonner
+- **Date Formatting**: date-fns
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (v20 or higher recommended)
+- npm (v10 or higher)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Steps to Run Locally
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **Clone the repository** (or unzip the source code):
+   ```bash
+   cd employee-dashboard
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in Browser**:
+   Navigate to `http://localhost:5173` (or the port shown in the terminal).
+
+## Assumptions & Design Decisions
+
+- **Persistence**: `localStorage` is used to persist employee data and authentication state to simulate a backend database. This ensures data survives page reloads.
+- **Authentication**: Since there is no backend, any non-empty username/password combination is accepted for login, but the session is managed securely within the client context.
+- **Styling**: Tailwind CSS v4 is used for a modern, utility-first approach.
+- **Icons**: `lucide-react` was chosen for its clean and consistent icon set.
+- **Print**: A specific `@media print` style block ensures that only the relevant table data is printed, hiding navigation and buttons.
+
+## Project Structure
+
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+src/
+├── components/     # Reusable UI components (EmployeeList, EmployeeForm, etc.)
+├── context/        # React Context for state management (Auth, Employee)
+├── pages/          # Page components (Login, Dashboard)
+├── types/          # TypeScript interfaces
+├── utils/          # Helper functions and mock data
+├── App.tsx         # Main application component with routing
+└── main.tsx        # Entry point
 ```
